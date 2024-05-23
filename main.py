@@ -16,30 +16,35 @@ class Wordle():
     def set_secret(self):
         self.secret = choice(words).upper()
 
-    def set_guess(self,guess):
+    def set_guess(self, guess):
         if self.rounds_left > 0:
             self.guess = guess.upper()
             self.rounds_left -= 1
             self.check_guess()
             # print(self.guess)
             # print(self.key)
-            if self.key == [2, 2, 2, 2, 2]:
-                print(f"YAYY. word is {self.secret}")
         else:
             print(f"out of guesses. word was{self.secret}")
 
     def check_guess(self):
+        temp_guess = list(self.guess)
+        temp_secret = list(self.secret)
         for j in range(self.size):
-            if self.guess[j] == self.secret[j]:
+            if temp_guess[j] == temp_secret[j]:
                 self.key[j] = 2
-            elif self.guess[j] in self.secret:
-                self.key[j] = 1
-            else:
-                self.key[j] = 0
+                temp_guess[j] = "*"
+                temp_secret[j] = "*"
+        for i, letter in enumerate(temp_guess):
+            if letter != "*" and letter in temp_secret:
+                self.key[i] = 1
+                temp_secret[temp_secret.index(letter)] = "*"
+            elif temp_guess[i] != "*":
+                self.key[i] = 0
 
     @property
     def correct(self):
         return self.guess == self.secret
+
 
 if __name__ == "__main__":
     wordle = Wordle(words)
